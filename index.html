@@ -130,6 +130,7 @@
                 };
                 todos.push(todo);
                 todoInput.value = '';
+                storeTodos(todos);
                 renderTodos();
                 updateStats();
             }
@@ -192,6 +193,7 @@
                 renderTodos();
                 updateStats();
             }
+            storeTodos(todos);
         }
         
         // Delete todo
@@ -200,7 +202,8 @@
             todoElement.classList.add('slide-out');
             
             setTimeout(() => {
-                todos = todos.filter(t => t.id !== id);
+                todos = todos.filter(t => t.id !== id);                
+                storeTodos(todos);
                 renderTodos();
                 updateStats();
             }, 300);
@@ -209,7 +212,7 @@
         // Filter todos
         function filterTodos(filter) {
             currentFilter = filter;
-            
+            localStorage.setItem("filterType", filter);
             // Update filter button styles
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 if (btn.getAttribute('data-filter') === filter) {
@@ -245,10 +248,23 @@
             
             todoCount.textContent = statsText;
         }
+
+        function loadTodos(){            
+            let todosJSON = localStorage.getItem("todos");
+            let todos = JSON.parse(todosJSON);
+            todos = Array.isArray(todos) ? todos : [];
+            return todos;
+        }
+        function storeTodos(todos){
+            todos = Array.isArray(todos) ? todos : [];
+            localStorage.setItem("todos", JSON.stringify(todos));
+        }
         
         // Initialize
+        todos = loadTodos();
         renderTodos();
         updateStats();
+        filterTodos(localStorage.getItem("filterType") ?? "all");
     </script>
 </body>
 </html>
