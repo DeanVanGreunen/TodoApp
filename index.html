@@ -262,6 +262,9 @@
         
         // Initialize
         todos = loadTodos();
+        nextId = todos.length
+        ? Math.max(...todos.map(t => t.id)) + 1
+        : 1;
         renderTodos();
         updateStats();
         filterTodos(localStorage.getItem("filterType") ?? "all");
